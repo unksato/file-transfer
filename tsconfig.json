@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "amd",
+        "target": "es5",
+        "removeComments": true,
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "outFile": "dist/file-transfer.js",
+        "types": [
+            "peerjs"
+        ]
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
+}
