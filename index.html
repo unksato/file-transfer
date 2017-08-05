@@ -1,145 +1,151 @@
 <html>
-    <head>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="./dist/file-transfer.min.js"></script>
-        <script type="text/javascript" src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-        <style type="text/css">
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="./dist/file-transfer.min.js"></script>
+    <script type="text/javascript" src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <style type="text/css">
         <!--
-            /* layout.css Style */
-            .upload-drop-zone {
+        /* layout.css Style */
+
+        .upload-drop-zone {
             height: 200px;
             border-width: 2px;
             margin-bottom: 20px;
-            }
+        }
+        /* skin.css Style*/
 
-            /* skin.css Style*/
-            .upload-drop-zone {
+        .upload-drop-zone {
             color: #ccc;
             border-style: dashed;
             border-color: #ccc;
             line-height: 200px;
             text-align: center
-            }
-            .upload-drop-zone.drop {
+        }
+
+        .upload-drop-zone.drop {
             color: #222;
             border-color: #222;
-            }
-            .container {
-                margin-top: 20px;
-            }
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
         -->
-        </style>
-        <script>
-            var transfer = new FileTransfer.Transfer(function(blob, filename){
-                var dom = document.createElement('a');
-                var span = document.createElement('span');
-                span.setAttribute('class', 'badge alert-success pull-right');
-                span.innerText = 'Success';
-                dom.setAttribute('class','list-group-item list-group-item-success');
-                dom.innerText = filename;
-                dom.appendChild(span);
-                dom.href = (window.URL || window.webkitURL).createObjectURL(blob);
-                dom.download = filename;
+    </style>
+    <script>
+        var transfer = new FileTransfer.Transfer(function (blob, filename) {
+            var dom = document.createElement('a');
+            var span = document.createElement('span');
+            span.setAttribute('class', 'badge alert-success pull-right');
+            span.innerText = 'Success';
+            dom.setAttribute('class', 'list-group-item list-group-item-success');
+            dom.innerText = filename;
+            dom.appendChild(span);
+            dom.href = (window.URL || window.webkitURL).createObjectURL(blob);
+            dom.download = filename;
 
-                document.getElementById('sharedfiles').appendChild(dom);
-            });
+            document.getElementById('sharedfiles').appendChild(dom);
+        });
 
-            window.onload = function () {
-                var dropZone = document.getElementById('drop-zone');
-                var uploadForm = document.getElementById('js-upload-form');
-                var startUpload = function(files) {
-                    for(var i in files){
-                        transfer.sendFile(files[i]);
-                    }
+        window.onload = function () {
+            var dropZone = document.getElementById('drop-zone');
+            var uploadInput = document.getElementById('js-upload-files');
+            var startUpload = function (files) {
+                for (var i in files) {
+                    transfer.sendFile(files[i]);
                 }
+            }
 
-                uploadForm.addEventListener('submit', function(e) {
+            uploadInput.onchange = function () {
+                if (document.getElementById('js-upload-files').value) {
                     var uploadFiles = document.getElementById('js-upload-files').files;
-                    e.preventDefault()
 
-                    startUpload(uploadFiles)
-                })
-
-                dropZone.ondrop = function(e) {
-                    e.preventDefault();
-                    this.className = 'upload-drop-zone';
-
-                    startUpload(e.dataTransfer.files)
-                }
-
-                dropZone.ondragover = function() {
-                    this.className = 'upload-drop-zone drop';
-                    return false;
-                }
-
-                dropZone.ondragleave = function() {
-                    this.className = 'upload-drop-zone';
-                    return false;
+                    startUpload(uploadFiles);
                 }
             }
 
-            function createhost(){
-                var peerId = document.getElementById('peerId').value;
-                transfer.open(peerId).then(function(id){
-                    document.getElementById('peerId').value = id;
-                    document.getElementById('peerId').disabled = true;
-                    document.getElementById('createbtn').disabled = true;
-                    document.getElementById('connectbtn').disabled = true;
-                    document.getElementById('filesender').style.display = 'block';
-                });
+            dropZone.ondrop = function (e) {
+                e.preventDefault();
+                this.className = 'upload-drop-zone';
+
+                startUpload(e.dataTransfer.files)
             }
 
-            function connecthost(){
-                var peerId = document.getElementById('peerId').value;
-                transfer.connect(peerId).then(function(){
-                    document.getElementById('peerId').disabled = true;
-                    document.getElementById('createbtn').disabled = true;
-                    document.getElementById('connectbtn').disabled = true;
-                    document.getElementById('filesender').style.display = 'block';
-                });
+            dropZone.ondragover = function () {
+                this.className = 'upload-drop-zone drop';
+                return false;
             }
 
-        </script>
-    </head>
-    </body>
-        <div class="container">
-            <div class="panel panel-default">
-            <div class="panel-heading"><strong>Upload</strong> <small>Share files</small></div>
-            <div class="panel-body">
+            dropZone.ondragleave = function () {
+                this.className = 'upload-drop-zone';
+                return false;
+            }
+        }
 
-                <b>PeerID:</b> <input type="text" id="peerId" spellcheck="false"> <button id='createbtn' onclick="createhost()">Create Host</button> or <button id="connectbtn" onclick="connecthost()">Connect Host</button>
+        function createhost() {
+            var peerId = document.getElementById('peerId').value;
+            transfer.open(peerId).then(function () {
+                document.getElementById('peerId').disabled = true;
+                document.getElementById('createbtn').disabled = true;
+                document.getElementById('connectbtn').disabled = true;
+                document.getElementById('filesender').style.display = 'block';
+            });
+        }
 
-                <!-- Standar Form -->
-                <div id="filesender" style="display: none;">
-                    <h4>Select files from your computer</h4>
-                    <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
-                    <div class="form-inline">
-                        <div class="form-group">
+        function connecthost() {
+            var peerId = document.getElementById('peerId').value;
+            transfer.connect(peerId).then(function () {
+                document.getElementById('peerId').disabled = true;
+                document.getElementById('createbtn').disabled = true;
+                document.getElementById('connectbtn').disabled = true;
+                document.getElementById('filesender').style.display = 'block';
+            });
+        }
+    </script>
+</head>
+</body>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Upload</strong> <small>Share files</small></div>
+        <div class="panel-body">
+
+            <b>PeerID:</b> <input type="text" id="peerId" spellcheck="false"> <button id='createbtn' onclick="createhost()">Create Host</button>            or <button id="connectbtn" onclick="connecthost()">Connect Host</button>
+
+            <!-- Standar Form -->
+            <div id="filesender" style="display: none;">
+                <h4>Select files from your computer</h4>
+                <div class="form-inline">
+                    <div class="form-group">
                         <input type="file" name="files[]" id="js-upload-files" multiple>
-                        </div>
                     </div>
-                    </form>
+                </div>
 
-                    <!-- Drop Zone -->
-                    <h4>Or drag and drop files below</h4>
-                    <div class="upload-drop-zone" id="drop-zone">
+                <!-- Drop Zone -->
+                <h4>Or drag and drop files below</h4>
+                <div class="upload-drop-zone" id="drop-zone">
                     Just drag and drop files here
-                    </div>
+                </div>
 
-                    <!-- Upload Finished -->
-                    <div class="js-upload-finished">
+                <!-- Upload Finished -->
+                <div class="js-upload-finished">
                     <h3>Shared files</h3>
                     <div class="list-group" id="sharedfiles">
                     </div>
                 </div>
-                </div>
             </div>
-            </div>
-        </div> <!-- /container -->
-    </body>
+        </div>
+    </div>
+</div>
+<!-- /container -->
+</body>
+
 </html>

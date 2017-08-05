@@ -79,7 +79,7 @@ namespace FileTransfer {
             return d.promise;
         }
 
-        send(eventName: string, data: any) {
+        send(eventName: string, data?: any) {
             if (this._connection) {
                 this._connection.send(JSON.stringify({ eventName, data }));
             }

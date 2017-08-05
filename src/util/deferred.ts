@@ -8,7 +8,7 @@ namespace MyQ {
 
         public promise: Promise<RESULT> = new Promise<RESULT>();
 
-        public resolve(arg: RESULT) {
+        public resolve(arg?: RESULT) {
             setTimeout(() => {
                 this.promise.resolve(arg);
             }, 0)
